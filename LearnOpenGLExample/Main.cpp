@@ -3,6 +3,9 @@
 #include<iostream>
 #include "Shader.h"
 #include "stb_image.h"
+#include<glm\glm.hpp>
+#include<glm\gtc\matrix_transform.hpp>
+#include<glm\gtc\type_ptr.hpp>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void ProcessInput(GLFWwindow *window);
@@ -134,6 +137,8 @@ int main()
 	ourShader.setInt("texture1", 0);
 	ourShader.setInt("texture2", 1);
 
+	unsigned int transformLoc = glGetUniformLocation(ourShader.ID, "transform");
+
 	//Render Loop
 	while (!glfwWindowShouldClose(window))
 	{
@@ -150,6 +155,12 @@ int main()
 		float greenValue = sin(timeValue) / 2.0f + 0.5f;
 		int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
 		glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);*/
+		
+		//Matrix transformations
+		glm::mat4 trans;
+		trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.5f));
+		trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
 
 		//Bind texture
 		glActiveTexture(GL_TEXTURE0);
